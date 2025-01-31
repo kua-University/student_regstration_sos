@@ -1,0 +1,71 @@
+<?php
+
+namespace Tests\Feature;
+
+use Tests\TestCase;
+use App\Models\User;
+use App\Models\Student;
+use App\Models\Payment;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+class StudentManagementTest extends TestCase
+{
+    use RefreshDatabase;
+
+    /** @test */
+    public function it_registers_a_student_successfully()
+    {
+        $studentData = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'password' => 'password123',
+            'password_confirmation' => 'password123',
+        ];
+
+        $response = $this->postJson(route('register'), $studentData);
+
+        $response->assertStatus(201)
+                 ->assertJsonStructure(['message', 'student']);
+
+        $this->assertDatabaseHas('students', [
+            'email' => 'john@example.com',
+        ]);
+    }
+
+    /** @test */
+    public function it_processes_payment_successfully()
+    {
+        $student = Student::factory()->create();
+        $paymentData = [
+            'student_id' => $student->id,
+            'amount' => 100.00,
+            'status' => 'completed',
+        ];
+
+        $response = $this->postJson(route('payment.process'), $paymentData);
+        
+        $response->assertStatus(201)
+                 ->assertJson(['message' => 'Payment successful']);
+
+        $this->assertDatabaseHas('payments', [
+            'student_id' => $student->id,
+            'amount' => 100.00,
+            'status' => 'completed',
+        ]);
+    }
+
+    /** @test */
+    public function it_validates_student_registration_data()
+    {
+        $invalidData = [
+            'name' => '',
+            'email' => 'invalid-email',
+            'password' => '',
+        ];
+
+        $response = $this->postJson(route('register'), $invalidData);
+
+        $response->assertStatus(422)
+                 ->assertJsonValidationErrors(['name', 'email', 'password']);
+    }
+}
