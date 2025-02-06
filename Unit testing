@@ -1,1 +1,60 @@
+import unittest
+
+def validate_registration_input(name, email, course):
+    if not name or not email or not course:
+        return False
+    if '@' not in email:
+        return False
+    return True
+
+class TestRegistrationInputValidation(unittest.TestCase):
+    
+    def test_valid_input(self):
+        self.assertTrue(validate_registration_input('John Doe', 'john@example.com', 'Computer Science'))
+
+    def test_missing_name(self):
+        self.assertFalse(validate_registration_input('', 'john@example.com', 'Computer Science'))
+
+    def test_invalid_email(self):
+        self.assertFalse(validate_registration_input('John Doe', 'invalidemail', 'Computer Science'))
+
+if __name__ == '__main__':
+    unittest.main()
+# test 2
+def validate_payment_info(card_number, expiry_date, cvv):
+    if len(card_number) != 16 or not card_number.isdigit():
+        return False
+    if expiry_date < '2023-01':
+        return False
+    if len(cvv) != 3 or not cvv.isdigit():
+        return False
+    return True
+
+class TestPaymentInfoValidation(unittest.TestCase):
+
+    def test_valid_payment_info(self):
+        self.assertTrue(validate_payment_info('4111111111111111', '12/25', '123'))
+
+    def test_invalid_card_number(self):
+        self.assertFalse(validate_payment_info('1234', '12/25', '123'))
+
+    def test_expired_card(self):
+        self.assertFalse(validate_payment_info('4111111111111111', '01/20', '123'))
+
+if __name__ == '__main__':
+    unittest.main()
+#test 3
+def get_available_courses():
+    return ['Computer Science', 'software engineering', 'data base']
+
+class TestCourseSelection(unittest.TestCase):
+
+    def test_get_available_courses(self):
+        courses = get_available_courses()
+        self.assertIn('Computer Science', courses)
+        self.assertIn('software engineering', courses)
+        self.assertIn('data base', courses)
+
+if __name__ == '__main__':
+    unittest.main()
 
