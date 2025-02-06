@@ -1,0 +1,71 @@
+import unittest
+
+class TestRegistrationForm(unittest.TestCase):
+    
+    def validate_registration(self, name, email, course):
+        if not name or not course:
+            return {'status': 'error', 'message': 'Required fields missing'}
+        if '@' not in email:
+            return {'status': 'error', 'message': 'Invalid email format'}
+        return {'status': 'success'}
+
+    def test_valid_input(self):
+        response = self.validate_registration('John Doe', 'john@example.com', 'Computer Science')
+        self.assertEqual(response['status'], 'success')
+
+    def test_invalid_email_format(self):
+        response = self.validate_registration('John Doe', 'invalidemail', 'Computer Science')
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('Invalid email format', response['message'])
+
+    def test_missing_required_fields(self):
+        response = self.validate_registration('', 'john@example.com', '')
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('Required fields missing', response['message'])
+
+if __name__ == '__main__':
+    unittest.main()
+#test 2
+class TestPaymentValidation(unittest.TestCase):
+
+    def validate_payment_info(self, card_number, expiry_date, cvv):
+        if len(card_number) < 16:
+            return {'status': 'error', 'message': 'Invalid card number'}
+        if expiry_date < '2023-01':
+            return {'status': 'error', 'message': 'Card is expired'}
+        return {'status': 'success'}
+
+    def test_valid_payment_info(self):
+        response = self.validate_payment_info('4111111111111111', '12/25', '123')
+        self.assertEqual(response['status'], 'success')
+
+    def test_expired_card(self):
+        response = self.validate_payment_info('4111111111111111', '01/20', '123')
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('Card is expired', response['message'])
+
+    def test_invalid_card_number(self):
+        response = self.validate_payment_info('123456', '12/25', '123')
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('Invalid card number', response['message'])
+
+if __name__ == '__main__':
+    unittest.main()
+#test 3
+class TestCourseSelection(unittest.TestCase):
+
+    def get_available_courses(self):
+        return ['Computer Science', 'Mathematics', 'Physics']
+
+    def test_display_available_courses(self):
+        courses = self.get_available_courses()
+        self.assertIn('Computer Science', courses)
+        self.assertIn('Mathematics', courses)
+
+    def test_select_course(self):
+        selected_course = 'Physics'
+        courses = self.get_available_courses()
+        self.assertIn(selected_course, courses)
+
+if __name__ == '__main__':
+    unittest.main()
