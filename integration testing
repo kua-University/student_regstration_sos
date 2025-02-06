@@ -1,0 +1,70 @@
+import unittest
+
+class TestStudentRegistration(unittest.TestCase):
+    def test_successful_registration_with_payment(self):
+        student = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'course': 'Computer Science',
+            'payment_info': {
+                'card_number': '4111111111111111',
+                'expiry_date': '12/25',
+                'cvv': '123'
+            }
+        }
+        response = register_student(student)
+        self.assertEqual(response['status'], 'success')
+        self.assertIn('confirmation_email', response)
+
+def register_student(student):
+    # Mock function to simulate registration process
+    return {'status': 'success', 'confirmation_email': True}
+
+if __name__ == '__main__':
+    unittest.main()
+#test no2
+class TestStudentRegistration(unittest.TestCase):
+    def test_payment_method_validation(self):
+        student = {
+            'name': 'Bob Brown',
+            'email': 'bob@example.com',
+            'course': 'Chemistry',
+            'payment_info': {
+                'card_number': '4000000000000000',  # Simulated invalid card
+                'expiry_date': '12/20',
+                'cvv': '123'
+            }
+        }
+        response = register_student(student)
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('invalid_payment_method', response)
+
+def register_student(student):
+    # Mock function to simulate invalid payment method check
+    if student['payment_info']['card_number'] == '4000000000000000':
+        return {'status': 'error', 'invalid_payment_method': True}
+    return {'status': 'success'}
+
+if __name__ == '__main__':
+    unittest.main()
+#test 3
+class TestStudentRegistration(unittest.TestCase):
+    def test_duplicate_registration_attempt(self):
+        student = {
+            'name': 'John Doe',
+            'email': 'john@example.com',
+            'course': 'Computer Science'
+        }
+        register_student(student)  # First registration
+        response = register_student(student)  # Second registration
+        self.assertEqual(response['status'], 'error')
+        self.assertIn('duplicate_registration', response)
+
+def register_student(student):
+    # Mock function to simulate duplicate registration check
+    if student['email'] == 'john@example.com':
+        return {'status': 'error', 'duplicate_registration': True}
+    return {'status': 'success'}
+
+if __name__ == '__main__':
+    unittest.main()
